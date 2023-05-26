@@ -12,15 +12,13 @@ const passportJWT = require('./config/passport-jwt-strategy');
 const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const customMware = require('./config/middleware');
+const passportGoogle=require('./config/passport-google-oauth2-strategy');
 
 app.use(express.urlencoded());
 // app.use(express.cookieParser("thissecretrocks"));
-var cookieParser = require('cookie-parser');
-app.use(cookieParser(config.cookieSecret))
-app.use(passport.initialize());
-app.use(passport.session());
+// const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
-app.use(passport.setAuthenticatedUser);
 app.use(express.static('./assets'));
 // make the uploads path available to the browser
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -28,8 +26,6 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(expressLayouts);
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
-// use express router
-app.use('/', require('./routes'));
 
 // set up the view engine
 app.set('view engine', 'ejs');
@@ -57,6 +53,10 @@ app.use(session({
 }));
 
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
 
 app.use(flash());
 app.use(customMware.setFlash);

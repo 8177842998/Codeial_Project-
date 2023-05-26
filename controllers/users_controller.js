@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const fs = require('fs');
 const path = require('path');
+const { CLIENT_RENEG_LIMIT } = require('tls');
 
 // let's keep it same as before
 module.exports.profile = function(req, res){
@@ -111,9 +112,15 @@ module.exports.createSession = function(req, res){
 }
 
 module.exports.destroySession = function(req, res){
-    req.logout();
-    req.flash('success', 'You have logged out!');
+    req.logout((err)=>{
+        if (err) {
+            return next(err);
+          }
+          req.flash('success', 'You have logged out!');
 
 
-    return res.redirect('/');
+          return res.redirect('/');
+
+    });
+   
 }
